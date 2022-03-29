@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGB_HEX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        .form_box {
+            width: 200px;
+            height: 120px;
+            margin: 35px auto 0;
+        }
+
+        .tab {
+            display: flex;
+            width: 200px;
+            height: 20px;
+            margin-bottom: 5px;
+        }
+
+        .tab:nth-child(5) {
+            margin-bottom: 0;
+        }
+
+        .label {
+            width: 40px;
+            height: 20px;
+        }
+
+        .input input {
+            width: 160px;
+            height: 20px;
+            /* 用于解决div中的文本框无法贴顶问题 */
+            vertical-align: top;
+            box-sizing: border-box;
+        }
+
+        .btns {
+            margin: 15px auto 0;
+            display: flex;
+            justify-content: space-between;
+            width: 200px;
+            height: 50px;
+        }
+
+        .btns>div {
+            width: 85px;
+            height: 50px;
+            text-align: center;
+            line-height: 50px;
+            border-radius: 25px;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+
+        .link {
+            margin: 175px auto 0;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        a {
+            color: blue;
+            text-decoration: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="form_box">
+            <div class="tab">
+                <div class="label">R:</div>
+                <div class="input">
+                    <input type="text" placeholder="请输入0~255之间的整数" v-model="R">
+                </div>
+            </div>
+            <div class="tab">
+                <div class="label">G:</div>
+                <div class="input">
+                    <input type="text" placeholder="请输入0~255之间的整数" v-model="G">
+                </div>
+            </div>
+            <div class="tab">
+                <div class="label">B:</div>
+                <div class="input">
+                    <input type="text" placeholder="请输入0~255之间的整数" v-model="B">
+                </div>
+            </div>
+            <div class="tab">
+                <div class="label">A:</div>
+                <div class="input">
+                    <input type="text" placeholder="请输入0~1之间的一位小数" v-model="A">
+                </div>
+            </div>
+            <div class="tab">
+                <div class="label">HEX:</div>
+                <div class="input">
+                    <input type="text" disabled v-model="HEX">
+                </div>
+            </div>
+        </div>
+        <div class="btns">
+            <div class="produce" @click="produce">生成颜色</div>
+            <div class="refresh" @click="refresh">恢复默认</div>
+        </div>
+        <div :style='[objStyles, overrideStyles]'></div>
+        <div class="link">
+            👉<a href="https://github.com/XuXiang0102/RGB_HEX">https://github.com/XuXiang0102/RGB_HEX</a>
+            <br>
+            copyright@徐翔
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./vue.js"></script>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    R: '0',
+                    G: '0',
+                    B: '0',
+                    A: '1',
+                    HEX: '#000000',
+                    objStyles: {
+                        margin: '15px auto 0',
+                        width: '200px',
+                        height: '200px',
+                        borderRadius: '50%'
+                    },
+                    overrideStyles: {
+                        // 这个时候，读取不到this.data里面的数据
+                        backgroundColor: ''
+                    },
+                }
+            },
+            created() {
+                // 运用created钩子函数，重新赋值一下
+                this.overrideStyles.backgroundColor = 'rgba(' + this.R + ',' + this.G + ',' + this.B + ',' + this.A + ')';
+            },
+            methods: {
+                toSixteen(param) {
+                    return (param).toString(16).length == 2 ? '' + (param).toString(16) : '0' + (param).toString(16); // 这一步是让十进制的数转成十六进制，并且按需在前面自动补零，变成一个字符串
+                },
+                produce() {
+                    this.overrideStyles.backgroundColor = 'rgba(' + this.R + ',' + this.G + ',' + this.B + ',' + this.A + ')';
+                    this.HEX = '#' + this.toSixteen(Number(this.R)) + this.toSixteen(Number(this.G)) + this.toSixteen(Number(this.B));
+                },
+                refresh() {
+                    this.R = 0;
+                    this.G = 0;
+                    this.B = 0;
+                    this.A = 1;
+                    // 让rgba变成(0,0,0,1)，然后重新调用produce()函数
+                    this.produce()
+                },
+            },
+        })
+    </script>
+</body>
+
+</html>
